@@ -1,5 +1,6 @@
 package com.example.imagepro;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -9,10 +10,16 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -35,8 +42,10 @@ import org.opencv.android.OpenCVLoader;
 
 import java.io.IOException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
 
    static {
@@ -52,10 +61,31 @@ public class MainActivity extends AppCompatActivity  {
     private Button camera_button;
    private Button storage_button;
 
+    private float x1, x2, y1, y2;
+    private static int MIN_DISTANCE = 150;
+    public static int REQUEST_CODE;
+    private GestureDetector gestureDetector;
+   TextToSpeech textToSpeech;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_main2);
+
+          textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if(i==TextToSpeech.SUCCESS){
+                    int lang = textToSpeech.setLanguage(Locale.ENGLISH);
+                    String s = "For Real time object detection, swipe up and say detect";
+                    textToSpeech.setSpeechRate(1.0f);
+                    int speech = textToSpeech.speak(s,TextToSpeech.QUEUE_FLUSH,null);
+                }
+            }
+        });
+          this.gestureDetector = new GestureDetector(MainActivity.this, this);
 
 
 
@@ -110,6 +140,10 @@ public class MainActivity extends AppCompatActivity  {
           camera_button=findViewById(R.id.camera);
         storage_button=findViewById(R.id.storage);
 
+
+
+
+
         camera_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,5 +189,90 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+
+
+
+    @Override
+        public boolean onTouchEvent(MotionEvent event) {
+
+            gestureDetector.onTouchEvent(event);
+            switch (event.getAction()){
+
+                case MotionEvent.ACTION_DOWN:
+                    x1=event.getX();
+                    y1=event.getY();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    x2= event.getX();
+                    y2= event.getY();
+
+                    float valueX= x2-x1;
+                    float valueY=y2-y1;
+                    if(Math.abs(valueY)>MIN_DISTANCE) {
+                        if(y1>y2){
+                            voiceautomation();
+                        }
+                    }
+            }
+        return super.onTouchEvent(event);
+    }
+
+    
+    private void voiceautomation() {
+        Intent voice = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        voice.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        voice.putExtra(RecognizerIntent.EXTRA_LANGUAGE,
+                Locale.getDefault());
+        voice.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                "What do you want...");
+        startActivityForResult(voice, 1);
+
+    }
+
+
+      @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+          super.onActivityResult(requestCode, resultCode, data);
+          if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+              ArrayList<String> arrayList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+              if (arrayList.get(0).toString().toLowerCase().equals("detect")) {
+                  Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                  //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                  startActivity(intent);
+              }
+          }
+      }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
     }
 }

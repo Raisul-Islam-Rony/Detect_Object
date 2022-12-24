@@ -48,8 +48,10 @@ public class objectDetectorClass implements SensorEventListener {
     private  int width=0;
     String object=" ";
     float Ftop;
-
+    String storage_photo=" ";
+    List<String>storage_list;
     List<String>object_list;
+    String s=" ";
     objectDetectorClass(AssetManager assetManager,String modelPath, String labelPath,int inputSize) throws IOException{
         INPUT_SIZE=inputSize;
         // use to define gpu or cpu // no. of threads
@@ -155,11 +157,11 @@ public class objectDetectorClass implements SensorEventListener {
         // as output has only 10 boxes
 
        // int it=0;
-        for (int i=0;i<2;i++){
+        for (int i=0;i<5;i++){
             float class_value=(float) Array.get(Array.get(Object_class,0),i);
             float score_value=(float) Array.get(Array.get(score,0),i);
             // define threshold for score
-            if(score_value>0.5){
+            if(score_value>0.65){
                 Object box1=Array.get(Array.get(value,0),i);
                 // we are multiplying it with Original height and width of frame
 
@@ -196,6 +198,7 @@ public class objectDetectorClass implements SensorEventListener {
 
 
     public Mat recognizePhoto(Mat mat_image){
+        storage_list=new ArrayList<>();
 
         // if you do not do this process you will get improper prediction, less no. of object
         // now convert it to bitmap
@@ -249,11 +252,11 @@ public class objectDetectorClass implements SensorEventListener {
 
         // loop through each object
         // as output has only 10 boxes
-        for (int i=0;i<10;i++){
+        for (int i=0;i<5;i++){
             float class_value=(float) Array.get(Array.get(Object_class,0),i);
             float score_value=(float) Array.get(Array.get(score,0),i);
             // define threshold for score
-            if(score_value>0.5){
+            if(score_value>0.65){
                 Object box1=Array.get(Array.get(value,0),i);
                 // we are multiplying it with Original height and width of frame
 
@@ -266,6 +269,27 @@ public class objectDetectorClass implements SensorEventListener {
                 // write text on frame
                                                 // string of class name of object  // starting point                         // color of text           // size of text
                 Imgproc.putText(mat_image,labelList.get((int) class_value),new Point(left,top),3,1,new Scalar(255, 0, 0, 255),2);
+                object=labelList.get((int)class_value);
+                if(storage_list.contains(object))
+                {
+
+                }
+                else
+                {
+                    if(storage_photo.equals(" "))
+                    {
+                        storage_photo = storage_photo + " "+object;
+                    }
+                    else
+                    {
+                        storage_photo = storage_photo + " and "+object;
+
+                    }
+
+                    storage_list.add(object);
+                }
+
+
             }
 
         }
@@ -281,6 +305,11 @@ public class objectDetectorClass implements SensorEventListener {
     public String getObjectName()
     {
         return object;
+    }
+
+    public String getStorage_photo()
+    {
+        return storage_photo;
     }
 
    public float getTop()
