@@ -29,6 +29,7 @@
             android:exported="false" />
         <activity
             android:name=".Storage_Prediction"
+            android:theme="@style/Theme.Design.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".MainActivity2"

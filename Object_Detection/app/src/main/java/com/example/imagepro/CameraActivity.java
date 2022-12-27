@@ -193,7 +193,7 @@ public class CameraActivity extends Activity implements CameraBridgeViewBase.CvC
 
 
 
-        if( object_list.contains(s) && Math.abs(p-x_axis)<.7 && Math.abs(q-y_axis)<.7 && Math.abs(r-z_axis)<.7 )
+        if( object_list.contains(s) && Math.abs(p-x_axis)<1.5 && Math.abs(q-y_axis)<1.5 && Math.abs(r-z_axis)<1.5 )
         {
 
 

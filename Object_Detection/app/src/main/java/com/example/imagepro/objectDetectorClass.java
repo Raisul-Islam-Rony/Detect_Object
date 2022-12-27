@@ -157,7 +157,7 @@ public class objectDetectorClass implements SensorEventListener {
         // as output has only 10 boxes
 
        // int it=0;
-        for (int i=0;i<5;i++){
+        for (int i=0;i<3;i++){
             float class_value=(float) Array.get(Array.get(Object_class,0),i);
             float score_value=(float) Array.get(Array.get(score,0),i);
             // define threshold for score
@@ -252,7 +252,7 @@ public class objectDetectorClass implements SensorEventListener {
 
         // loop through each object
         // as output has only 10 boxes
-        for (int i=0;i<5;i++){
+        for (int i=0;i<3;i++){
             float class_value=(float) Array.get(Array.get(Object_class,0),i);
             float score_value=(float) Array.get(Array.get(score,0),i);
             // define threshold for score

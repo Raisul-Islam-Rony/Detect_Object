@@ -51,7 +51,11 @@ public class Storage_Prediction extends AppCompatActivity {
         super.onCreate(savedInstanceState);
          setContentView(R.layout.activity_storage_prediction);
 
-        button=findViewById(R.id.select_image);
+
+       // button=findViewById(R.id.select_image);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getSupportActionBar().hide();
         imageView=findViewById(R.id.image_V);
 
         try{
@@ -117,7 +121,14 @@ public class Storage_Prediction extends AppCompatActivity {
                     int lang = textToSpeech.setLanguage(Locale.ENGLISH);
 
                     textToSpeech.setSpeechRate(1.0f);
-                    int speech = textToSpeech.speak("Photo Contains "+s,TextToSpeech.QUEUE_FLUSH,null);
+                    if(s.equals(""))
+                    {
+                        int speech=textToSpeech.speak("Cannot Detect Anything", TextToSpeech.QUEUE_FLUSH,null);
+                    }
+                    else
+                    {
+                        int speech = textToSpeech.speak("Photo Contains "+s,TextToSpeech.QUEUE_FLUSH,null);
+                    }
                 }
             }
         });

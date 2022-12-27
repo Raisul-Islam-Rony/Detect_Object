@@ -31,6 +31,7 @@ import android.os.Bundle;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -58,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     }
     private Button real,storage;
     Button b;
-    private Button camera_button;
-   private Button storage_button;
+    private CardView camera_button;
+   private CardView storage_button;
 
     private float x1, x2, y1, y2;
     private static int MIN_DISTANCE = 150;
